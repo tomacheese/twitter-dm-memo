@@ -27,7 +27,7 @@ def main():
 
         text = config.SEND_PREFIX + text + config.SEND_SUFFIX
 
-        if isFirst:
+        if not isFirst:
             send_discord_message(config.DISCORD_TOKEN, config.DISCORD_CHANNEL_ID, text)
 
         add_notified_id(direct_message.id)
