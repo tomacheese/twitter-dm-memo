@@ -16,12 +16,13 @@ def main():
         if direct_message.id in notified_ids:
             continue
 
-        message_data = direct_message.message_create.message_data
-        text = message_data.text
-        entities_urls = message_data.entities_urls
+        message_data = direct_message.message_create["message_data"]
+        print(message_data)
+        text = message_data["text"]
+        urls = message_data["entities"]["urls"]
 
-        for entities_url in entities_urls:
-            text = str(text).replace(entities_url.url, entities_urls.expanded_url)
+        for url in urls:
+            text = str(text).replace(url["url"], url["expanded_url"])
 
         text = config.SEND_PREFIX + text + config.SEND_SUFFIX
 

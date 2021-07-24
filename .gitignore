@@ -2,3 +2,5 @@ venv
 *.iml
 .idea/
 logs/
+.env
+notified_ids.json

@@ -67,9 +67,9 @@ def get_my_direct_messages(ck: str, cs: str, at: str, ats: str) -> list:
     for direct_message in direct_messages:
         if direct_message.type != "message_create":
             continue
-        if direct_message.message_create.sender_id != my_user.id:
+        if direct_message.message_create["sender_id"] != str(my_user.id):
             continue
-        if direct_message.message_create.target.recipient_id != my_user.id:
+        if direct_message.message_create["target"]["recipient_id"] != str(my_user.id):
             continue
 
         my_direct_messages.append(direct_message)

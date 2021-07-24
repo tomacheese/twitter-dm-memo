@@ -12,6 +12,8 @@ def getKey(key: str, default_value=None):
     if default_value is None and value is None:
         logger.critical("{} is not defined.".format(key))
         exit(1)
+    if value is None and default_value is not None:
+        return default_value
     return value
 
 
