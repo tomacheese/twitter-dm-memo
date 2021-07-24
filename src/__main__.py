@@ -1,6 +1,4 @@
-import config
-
-from src import init_logger, get_my_direct_messages, load_notified_ids, send_discord_message, add_notified_id
+from src import config, init_logger, get_my_direct_messages, load_notified_ids, send_discord_message, add_notified_id
 
 logger = init_logger()
 

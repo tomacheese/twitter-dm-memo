@@ -14,6 +14,9 @@ def init_logger(child_name: str = None) -> logging.Logger:
     dt = datetime.datetime.now().date()
     date_time = dt.strftime("%Y-%m-%d")
 
+    if not os.path.exists("logs/"):
+        os.mkdir("logs/")
+
     rotatedHandler = TimedRotatingFileHandler(
         filename="logs/%s.log" % date_time,
         encoding="UTF-8",
