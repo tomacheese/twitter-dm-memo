@@ -20,7 +20,7 @@ jobs:
         pip install flake8
 
     - name: Setup flake8 annotations
-      uses: rbialon/flake8-annotations@f8c29dc2e054df26e0171b0005e99454f7db57a0
+      uses: rbialon/flake8-annotations@c822b3bceb49cc612560c35bd3b731b6c826ef53
 
     - name: Lint with flake8
       run: |
