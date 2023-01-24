@@ -1,6 +1,6 @@
-venv
-*.iml
-.idea/
-logs/
-.env
-notified_ids.json
+node_modules/
+data/
+dist/
+output/
+
+config.json
