@@ -1,9 +1,0 @@
-[Unit]
-Description=TwitterDMMemo
-
-[Timer]
-Unit=TwitterDMMemo.service
-OnCalendar=*-*-* *:00,30:00
-
-[Install]
-WantedBy=timers.target
