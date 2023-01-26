@@ -35,7 +35,7 @@ env:
   # ビルド対象情報の情報
   TARGETS: >-
     [
-      { imageName: "tomacheese/twitter-dm-memo", dir: ".", file: "Dockerfile", packageName: "twitter-dm-memo" }
+      { imageName: "tomacheese/twitter-dm-memo", context: ".", file: "Dockerfile", packageName: "twitter-dm-memo" }
     ]
 
 concurrency:
@@ -72,8 +72,8 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: 'minor'
-          custom_release_rules: 'feat:minor:✨ Features,fix:patch:🐛 Fixes,docs:patch:📰 Docs,chore:patch:🎨 Chore,pref:patch:🎈 Performance improvements,refactor:patch:🧹 Refactoring,build:patch:🔍 Build,ci:patch:🔍 CI,revert:patch:⏪ Revert,style:patch:🧹 Style,test:patch:👀 Test,release:major:📦 Release'
+          default_bump: "minor"
+          custom_release_rules: "feat:minor:✨ Features,fix:patch:🐛 Fixes,docs:patch:📰 Docs,chore:patch:🎨 Chore,pref:patch:🎈 Performance improvements,refactor:patch:🧹 Refactoring,build:patch:🔍 Build,ci:patch:🔍 CI,revert:patch:⏪ Revert,style:patch:🧹 Style,test:patch:👀 Test,release:major:📦 Release"
           dry_run: ${{ github.event.pull_request.merged == false }}
 
       - name: Set platform matrix
@@ -110,8 +110,7 @@ jobs:
     steps:
       - name: Remove platform prefix
         id: platform
-        run:
-          echo "shortPlatform=$(echo "${{ matrix.platform }}" | sed -r -e 's/^[^\/]+\///')" >> $GITHUB_OUTPUT
+        run: echo "shortPlatform=$(echo "${{ matrix.platform }}" | sed -r -e 's/^[^\/]+\///')" >> $GITHUB_OUTPUT
 
       - name: Create GitHub deployment
         uses: chrnorm/deployment-action@v2.0.5
@@ -120,7 +119,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ needs.calc-version.outputs.tag }}
-          environment: '${{ matrix.target.packageName }}:${{ steps.platform.outputs.shortPlatform }}'
+          environment: "${{ matrix.target.packageName }}:${{ steps.platform.outputs.shortPlatform }}"
           environment-url: https://github.com/${{ github.repository }}/pkgs/container/${{ matrix.target.packageName }}
 
       - name: Update deployment status (in_progress)
@@ -179,7 +178,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.3.0
         with:
-          context: ${{ matrix.target.dir }}
+          context: ${{ matrix.target.context }}
           file: ${{ matrix.target.file }}
           push: ${{ github.event.pull_request.merged == true }}
           platforms: ${{ matrix.platform }}
@@ -204,6 +203,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           state: failure
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+  finished-build:
+    name: Check finished build
+    runs-on: ubuntu-latest
+    needs:
+      - calc-version
+      - build
+
+    steps:
+      - name: Check finished build
+        run: echo ok
 
   # 各プラットフォームのlatestからlatestタグにマージしてイメージを作成
   merge-latest:
@@ -232,6 +242,7 @@ jobs:
       - name: Create extra-images list
         id: extra-images
         run: |
+          # linux/amd64,linux/arm64 -> ${{ env.REGISTRY }}/tomacheese/my-pixiv:latest-amd64,${{ env.REGISTRY }}/tomacheese/my-pixiv:latest-arm64
           echo "images=$(echo "$PLATFORMS" | sed -r 's#([a-z]+)\/([a-z0-9]+)#${{ env.REGISTRY }}\/${{ matrix.target.imageName }}:latest-\2#g')" >> $GITHUB_OUTPUT
 
       - name: Create and push manifest images (latest)
