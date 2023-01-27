@@ -30,7 +30,7 @@ After that, you can start it with `docker-compose up -d` after creating a config
 
 If you are running in a Node.js environment, Node.js v18 is recommended.
 
-Download `index.js` from the [release page](https://github.com/tomacheese/twitter-dm-memo/releases) in the latest release.  
+Download and extract `twitter-dm-memo_vX.Y.Z.zip` from the [release page](https://github.com/tomacheese/twitter-dm-memo/releases) in the latest release.  
 After that, you can start it with `node index.js` after creating a configuration file with reference to [Configuration section](#configuration).
 
 ## Configuration
