@@ -72,8 +72,8 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          default_bump: "minor"
-          custom_release_rules: "feat:minor:✨ Features,fix:patch:🐛 Fixes,docs:patch:📰 Docs,chore:patch:🎨 Chore,pref:patch:🎈 Performance improvements,refactor:patch:🧹 Refactoring,build:patch:🔍 Build,ci:patch:🔍 CI,revert:patch:⏪ Revert,style:patch:🧹 Style,test:patch:👀 Test,release:major:📦 Release"
+          default_bump: 'minor'
+          custom_release_rules: 'feat:minor:✨ Features,fix:patch:🐛 Fixes,docs:patch:📰 Docs,chore:patch:🎨 Chore,pref:patch:🎈 Performance improvements,refactor:patch:🧹 Refactoring,build:patch:🔍 Build,ci:patch:🔍 CI,revert:patch:⏪ Revert,style:patch:🧹 Style,test:patch:👀 Test,release:major:📦 Release'
           dry_run: ${{ github.event.pull_request.merged == false }}
 
       - name: Set platform matrix
@@ -119,7 +119,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ needs.calc-version.outputs.tag }}
-          environment: "${{ matrix.target.packageName }}:${{ steps.platform.outputs.shortPlatform }}"
+          environment: '${{ matrix.target.packageName }}:${{ steps.platform.outputs.shortPlatform }}'
           environment-url: https://github.com/${{ github.repository }}/pkgs/container/${{ matrix.target.packageName }}
 
       - name: Update deployment status (in_progress)
@@ -316,10 +316,19 @@ jobs:
       - name: 🎁 Run package
         run: yarn package
 
+      - name: Create zip
+        id: create-zip
+        working-directory: output
+        run: |
+          REPO="${GITHUB_REPOSITORY#"${GITHUB_REPOSITORY_OWNER}/"}"
+          zip -r "${REPO}_${{ needs.calc-version.outputs.tag }}.zip" ./*
+          echo "zip-path=output/${REPO}-${{ needs.calc-version.outputs.tag }}.zip" >> $GITHUB_OUTPUT
+          echo "zip-filename=${REPO}-${{ needs.calc-version.outputs.tag }}.zip" >> $GITHUB_OUTPUT
+
       - name: Upload Release Asset
         uses: shogo82148/actions-upload-release-asset@v1.6.3
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: output/index.js
-          asset_name: index.js
-          asset_content_type: text/javascript
+          asset_path: ${{ steps.create-zip.outputs.zip-path }}
+          asset_name: ${{ steps.create-zip.outputs.zip-filename }}
+          asset_content_type: application/zip
