@@ -8,7 +8,7 @@ import { loadConfig, loadTwitterApi, PATH, sendDiscordMessage } from './utils'
 
 async function getNotifiableDirectMessages(
   twitterApi: TwitterApi,
-  notified: Notified
+  notified: Notified,
 ): Promise<DirectMessageCreateV1[]> {
   const me = await twitterApi.v1.verifyCredentials()
 
