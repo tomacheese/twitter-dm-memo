@@ -49,7 +49,7 @@ export function loadTwitterApi(config: Configuration): TwitterApi {
 
 export async function sendDiscordMessage(
   config: Configuration,
-  text: string
+  text: string,
 ): Promise<void> {
   // webhook or bot
   if (config.discord.webhook_url) {
@@ -73,7 +73,7 @@ export async function sendDiscordMessage(
         headers: {
           Authorization: `Bot ${config.discord.token}`,
         },
-      }
+      },
     )
     if (response.status !== 200) {
       throw new Error(`Discord bot failed (${response.status})`)
